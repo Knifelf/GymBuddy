@@ -7,7 +7,8 @@ services:
       - .:/app
     environment:
       # These variables are now pulled from your .env file
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - AIHUBMIX_API_KEY=${AIHUBMIX_API_KEY}
+      - AIHUBMIX_BASE_URL=${AIHUBMIX_BASE_URL:-https://aihubmix.com/v1}
       - PYTHONUNBUFFERED=${PYTHONUNBUFFERED}
     networks:
       - gymbuddy-network

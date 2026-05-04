@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 from typing import Dict, Any
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -26,10 +26,17 @@ class FeedbackAgent:
         self.landmarks: dict = {}
         self.previous_rolling_summary:str = "No previous sets in this session."
 
-        # Initialize the LLM model
+        # Initialize the LLM model via AiHubMix (OpenAI-compatible endpoint)
         load_dotenv()
-        google_key = os.environ.get("GOOGLE_API_KEY")
-        self.llm = ChatGoogleGenerativeAI(model=self.model, google_api_key=google_key)
+        api_key: str | None = os.environ.get("AIHUBMIX_API_KEY") or os.environ.get(
+            "GOOGLE_API_KEY"
+        )
+        base_url: str = os.environ.get("AIHUBMIX_BASE_URL", "https://aihubmix.com/v1")
+        self.llm = ChatOpenAI(
+            model=self.model,
+            api_key=api_key,
+            base_url=base_url,
+        )
 
     def update_rolling_summary(self,summary:str)->None:
         self.previous_rolling_summary = summary
